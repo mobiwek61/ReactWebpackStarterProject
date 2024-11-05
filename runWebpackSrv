@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+node ./node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js
