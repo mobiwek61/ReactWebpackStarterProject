@@ -1,5 +1,5 @@
 import React, { ReactDOM, useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes, Outlet, useParams,  useNavigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Outlet, Link, useParams,  useNavigate, useLocation } from "react-router-dom";
 
 function SampleReactControl() {
   /* useEffect??  In the React world "useEffect" is a component lifecycle function. 
@@ -22,13 +22,28 @@ function SampleReactControl() {
 }
 
 function RouterControlSample() {
+    // const navigate = useNavigate();
     return <>
     <BrowserRouter>
       <Routes>
           <Route path='/' // this route always taken. Serves as menu frame for content
               //       ^ all routes hit this one because its /
-              element={ <div id='reactRouterTopRoute' className='blockyMsg' style={{ border: '4px solidrgb(102, 33, 214)' }} >
-                            Hello from RouterControlSample, path '/'</div>}>    
+              element={ <div id='reactRouterTopRoute' 
+                             className='blockyMsg' 
+                             style={{ border: '4px solidrgb(102, 33, 214)' }} >
+                            Hello from RouterControlSample, path '/'<br/>
+                            <nav>
+                                <Link to="/snow">snow</Link><br/>
+                                <Link to="/sand">sand</Link>
+                            </nav>
+                            <Outlet/>
+                        </div>}>  
+                  <Route path='snow'
+                    element={ <div>there is snow! it's cold!</div> }>
+                  </Route>
+                  <Route path='sand'
+                    element={ <div>there is sand! at the beach! it's hot!</div> }>
+                  </Route>
           </Route> {/*  <Route path='/' */}
       </Routes>
     </BrowserRouter></>

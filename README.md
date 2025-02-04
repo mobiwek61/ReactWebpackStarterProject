@@ -1,9 +1,7 @@
 
 
 This demo project uses a custom webpack configuration, specifically setup for React.  
-Assumes the 'nix **bash shell** included with git for windows has been installed or it's
-run from a 'nix box (not tested)  
-To run, cd to this folder and in a git-bash shell:  
+To run, cd to this folder and in a git-bash (on windows) window:  
   ```
   # reads package.json and loads node_modules folder with packages.
   npm install 
@@ -24,9 +22,6 @@ To run, cd to this folder and in a git-bash shell:
   - it monitors source files and auto-builds during development.  
 
   **webpack.config\*.js gets read for configuration** and directs webpack's behavior:  
-- The line: ```entry: ['./src/index.js'],``` tells webpack to go to this file and recursively go into all its imports (local files or
-npm packages) and makes a **bundle\*.js** file with **everything needed** inside it, including index.js.
-- the line ```filename: 'bundle_webpackServer.js',``` tells webpack to "create" this file so that the HTML file can call it in a script. When webpack is running as a server this file doesn't physically exist on the filesystem, but HTML can see it however.
 - The webpack server serves **index.html**. On the browser, this requests the **bundle file** above inside a ```<script>``` tag.
   - This bundle file runs any javascript not inside a function.   
     In this case, lines from **index.js** (now inside the bundle) get run.  
@@ -39,7 +34,7 @@ npm packages) and makes a **bundle\*.js** file with **everything needed** inside
 - Note that React.js is run only on the browser and nothing gets run by the webpack server, except to serve up files.
 - **404 error**. When a react page gets reloaded, the server looks for the URL path, doesn't see a file there and returns a 404 error.  The line ```historyApiFallback: true,``` causes the webpack server to revert to index.html and fixes this problem because control gets returned to the React router.    
 - A browser preloaded to a specific port and url is started by the line   
-```open: { target: ['/x15/x15image?mwmfont=24.3px'],   .....```  
+```open: { target: ['/snow'],   .....```  
 - This line calls a custom plugin to display the url as an IP address (not localhost) in a QR code on the console:   
 ```new MyWebpackPlugin_shows_URL_as_qrcode({ options: true, urlpath: ':3003/x15/x15?mwmfont=24.7px' })],```  
 - Beware of the **duplicate React.js problem**. When running a node/React app directly or from webpack there must be only one node_modules in the run folder hierarchy. If more than one node_modules is present ie: run folder and 2 levels up, React fails with a vague and unrelated error message, typically something about useEffect not allowed.
