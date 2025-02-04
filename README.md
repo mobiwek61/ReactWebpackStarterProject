@@ -1,6 +1,7 @@
 
 
-This demo project uses a custom webpack configuration, specifically setup for React.  
+This demo project uses a custom webpack configuration, specifically setup for React.   
+**I totally recommend ignoring any details about webpack; just use it as described below.**  
 To run, cd to this folder and in a git-bash (on windows) window:  
   ```
   # reads package.json and loads node_modules folder with packages.
