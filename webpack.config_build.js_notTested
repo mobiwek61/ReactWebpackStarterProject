@@ -1,0 +1,137 @@
+
+/**  File webpack.config_*.js
+ This is a javascript file which gets imported by webpack. It exports a big JSON object which
+ directs webpack functionality. It's actually a configuration file.
+ This file is setup for DEVELOPMENT, not for BUILD.
+
+ What it does: pack all js files into a single minified .js file and run a development HTTP server for
+ development purposes.
+
+ Below command directs webpack to serve the application for development, with auto build when 
+ source is modified: (for git-bash window). 
+ COMMAND LINE >> node node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js  
+ 
+ Below command creates a javascript bundle in a real file on filesystem. It uses a config file setup
+ for a BUILD 
+ COMMAND LINE (for other file not this one) >> node node_modules/webpack/bin/webpack build -c ./webpack.config_build.js  
+ 
+ ref: "https://webpack.js.org/configuration/module" used this to try do decipher whats going on here.
+ Note about running webpack: 
+ - Note that webpack is used as a command line utility and is NOT part of the bundle or the project.
+ - If webpack is installed globally "npm install -g webpack" there is a simple
+   "webpack" command. I don't do it, instead I run node manually as above.
+*/
+const path = require('path');  // this is so path.resolve() works to current fs location
+// npm i copy-webpack-plugin -D      ... installs and shows up in package.json as a dev-dependency (not part of project)
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+module.exports = // export this json thing to be imported by webpack
+{
+  // entry means "start dependency graph at this file", which follows casading import()'s to see what to put in bundle.js
+  // The server serves up index.html which has <script src="/bundle_XYZ.js" ... which effectively
+  // runs anything in the bundle which is not in a function ("this is top level code").
+  // NOTE: when webpack is run in "serve" mode, the bundle.js file is NOT physically created, instead it somehow
+  // makes the calling HTML file think it exists. Must have to do with auto-refresh of edits etc...
+  entry: './src/index.js',
+  optimization: {
+    minimize: true //false //true // human readable if minimize if false
+    // NOT ME >>    minimize: false
+    // Copilot: usedExports: This option enables tree shaking, which removes unused code from the bundle-> ,usedExports: true,
+  },
+  // NOT ME >> devtool: 'eval-source-map', // 'eval-cheap-source-map',  // to get chrome debugger line number in code to line up
+  // mode: 'production', 
+  mode: 'development',
+  // resolve is a fancy way of saying "look here for files to build graph". Extensions says use .js .jsx 
+  resolve: { 
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        // Copy everything from 'public' to the output directory. index.html is needed to start everything!
+        { from: 'public', to: 'public' }, 
+        { from: 'public/index_prod.html', to: 'public/index.html' },
+        { from: 'public/index.html', to: 'public/404.html' }
+      ]
+    })
+  ],
+  // setup where to put minified output file "the bundle", and any assets like jpegs. 
+  output: {
+    // specify bundle location.
+    path: path.resolve(__dirname, './build'), 
+    filename: 'bundle_build.js', // name of combined file, the "bundle"
+    // https://webpack.js.org/configuration/output/#outputlibrarytype
+    // library type 'window' will not create a bundle file. It's for running as a server, or clicking on index.html.
+    // I think it means "make library available via the DOM window object"
+    // NOT ME >>  library: { name: 'MyLibrary' , type: 'window' } 
+    // type: 'commonjs2' works on client but not local serve or clicking on index.html
+    // TODO: ask the robot Copilot to explain this stuff...
+    library: { type: 'commonjs2' } 
+  },
+  // *********************************************************************************************************
+  // *** "EXTERNALS" FIXES ERROR ON CLIENT: WHEN REACT CONTROL IMPORTED FROM BUNDLE CALLS useEffect(), GET ***
+  // ***  ERROR  MESSAGE ABOUT DUPLICATE COPIES OF REACT. BELOW ENTRY SAYS DONT BUNDLE REACT, JUST USE     ***
+  // ***  CLIENT'S COPY OF REACT FOR THE GIVEN LIBRARY/TYPE ENTRIES.                                       ***
+  // *** [OK for npmjs publish but not local bundle or wedpack development server]                                                       ***
+  // *** https://webpack.js.org/configuration/externals/                                                   ***
+  // *** "The externals configuration option provides a way of excluding dependencies from the output      ***
+  // *** bundles. Instead, the created bundle relies on that dependency to be present in the consumer's    ***
+  // *** (any end-user application) environment. ..."                                                      ***
+  // *********************************************************************************************************
+  // ME >>    
+  externals: {        
+    react: {          
+        commonjs: 'react',          
+        commonjs2: 'react',          
+        amd: 'React',          
+        root: 'React',      
+    },      
+    'react-dom': {          
+        commonjs: 'react-dom',          
+        commonjs2: 'react-dom',          
+        amd: 'ReactDOM',          
+        root: 'ReactDOM',      
+    },  
+    /** WARING: IF THIS IS LEFT OUT YOU GET MISLEADING ERROR ABOUT useNavigate() CANNOT BE CALLED OUTSIDE 
+     *  OF A ROUTER OR SOMETHING LIKE THAT. HAS TO DO WITH DUPLICATE REACT OBJECTS.  */
+    'react-router-dom': {          
+      commonjs: 'react-router-dom',          
+      commonjs2: 'react-router-dom',           
+      // TODO: what are entries for amd and root??  
+    },  
+  },
+
+  // modules appears to be chunks of processing to do. 
+  // In this case, there's 1 module which calls babel to convert jsx in React source to plain js
+  module: {
+    // jan 2025 typescript added. START of the babel rule
+    rules: [  // here's the first rule in the array of rules
+      { // feb 2025 added for sass, the css stylesheet thing
+        test: /\.(scss|sass)$/,  
+        // npm i sass-loader -D       
+        use: [ 'style-loader',  'css-loader', 'sass-loader' ] 
+      },
+      { // START of the babel rule
+        test: /\.(js|jsx|ts|tsx)$/,   // feed files *.js and *.js to babel. ref:https://webpack.js.org/configuration/module/#ruletest
+        // not needed... include: [  path.resolve(__dirname, "src/zzz"), path.resolve(__dirname, "src/abc") ],
+        exclude: /node_modules/, // dont send these hundreds of files to babel! Client will download these itself upon "npm i"
+        use: {  // ref: https://webpack.js.org/configuration/module/#ruleuse
+          loader: 'babel-loader', // node_modules/babel-loader/lib runs something here ...?
+          // NOTE: options can be left out but you need a .babelrc with same presets.
+          //       If you leave out both things, get fail without a description of whats wrong
+          options: { "presets": ["@babel/preset-typescript", "@babel/preset-env", "@babel/preset-react"] }
+        }, 
+      },  
+      {  // this rule includes .css files
+        test: /\.css$/,
+        use: [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' }
+        ]
+      }
+
+    ]
+  },
+  // devServer does not apply to this build
+  // devServer: {    ....
+};

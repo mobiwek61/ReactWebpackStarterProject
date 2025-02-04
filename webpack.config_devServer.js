@@ -1,21 +1,27 @@
 
+/**  File webpack.config_devServer.js
+ This is a javascript file which gets imported by webpack. It exports a big JSON object which
+ directs webpack functionality. It's actually a configuration file.
+ This file is setup for DEVELOPMENT, not for BUILD.
 
-// WEBPACK.CONFIG HAS SEVERAL VERSIONS, CONFIGURED BY (UN)COMMENTING VARIOUS LINES. OTHERWISE IDENTICAL.
-// NOT ME >>>  file webpack.config_build.js. This version for creating bundle.js for export
-// ME >>> webpack.config_devServer.js. This version for running webpack server for development, and for local import of package "npm install ../libproject/npmdist", or run by click on index.html
+ What it does: pack all js files into a single minified .js file and run a development HTTP server for
+ development purposes.
 
-// Function: pack all js files into a single minified .js file.
+ Below command directs webpack to serve the application for development, with auto build when 
+ source is modified: (for git-bash window). 
+ COMMAND LINE >> node node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js  
+ 
+ Below command creates a javascript bundle in a real file on filesystem. It uses a config file setup
+ for a BUILD 
+ COMMAND LINE (for other file not this one) >> node node_modules/webpack/bin/webpack build -c ./webpack.config_build.js  
+ 
+ ref: "https://webpack.js.org/configuration/module" used this to try do decipher whats going on here.
+ Note about running webpack: 
+ - Note that webpack is used as a command line utility and is NOT part of the bundle or the project.
+ - If webpack is installed globally "npm install -g webpack" there is a simple
+   "webpack" command. I don't do it, instead I run node manually as above.
+*/
 
-// COMMAND LINE EXAMPLES FOR ALL VERSIONS OF THIS FILE
-// *** RUN THESE FROM THE "CODE" FOLDER ! ******
-// // directs webpack to serve the application for development, with auto build when source is modified:
-// ME >>  node node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js  
-// // directs webpack to build the bundle.js (or other name) file out of many source files
-// // for publishing/export. Typically called from scripts/builddist. Omits React.js libraries
-// // to prevent conflict with client copies.
-// NOT ME >> node node_modules/webpack/bin/webpack build -c ./webpack.config_build.js  
-
-// ref: "https://webpack.js.org/configuration/module" used this to try do decipher whats going on here.
 const path = require('path');
 
 // to include my plugin. Not required I did it for fun.
@@ -123,17 +129,42 @@ module.exports =
   // In this case, there's 1 module which calls babel to convert jsx in React source to plain js
   module: {
     rules: [  // here's the first rule in the array of rules
-      { // START of the babel rule
-        test: /\.(js|jsx)$/,   // feed files *.js and *.js to babel. ref:https://webpack.js.org/configuration/module/#ruletest
+
+      ////////////////////    
+      { // feb 2025 added for sass, the css stylesheet thing
+        test: /\.(scss|sass)$/,
+        // npm i sass-loader -D   ... installs and shows up in package.json as a dev-dependency (not part of project)        
+        use: [ 'style-loader',  'css-loader', 'sass-loader' ] 
+      },
+      //////////////////
+      
+      { 
+        test: /\.(js|jsx|ts|tsx)$/,   // feed files *.js and *.js to babel. ref:https://webpack.js.org/configuration/module/#ruletest
         // not needed... include: [  path.resolve(__dirname, "src/zzz"), path.resolve(__dirname, "src/abc") ],
         exclude: /node_modules/, // dont send these hundreds of files to babel! Client will download these itself upon "npm i"
         use: {  // ref: https://webpack.js.org/configuration/module/#ruleuse
-          loader: 'babel-loader', // node_modules/babel-loader/lib runs something here ...?
-          // NOTE: options can be left out but you need a .babelrc with same presets.
-          //       If you leave out both things, get fail without a description of whats wrong
-          options: { "presets": ["@babel/preset-env", "@babel/preset-react"] }
+            loader: 'babel-loader', // node_modules/babel-loader/lib runs something here ...?
+            // NOTE: options can be left out but you need a .babelrc with same presets.
+            //       If you leave out both things, get fail without a description of whats wrong
+            // 1/2024 added @babel/preset-typescript for typescript and ts 
+            options: { 
+              "presets": ["@babel/preset-typescript", "@babel/preset-env", "@babel/preset-react"]
+              // for "optionalChainingAssign" error, but not needed. See comment in source ,"plugins": [ "@babel/plugin-proposal-optional-chaining" ]
+            }
         }, 
-      }, // END of babel rule
+      }, // END of the babel rule
+
+      // { // START of the babel rule
+      //   test: /\.(js|jsx)$/,   // feed files *.js and *.js to babel. ref:https://webpack.js.org/configuration/module/#ruletest
+      //   // not needed... include: [  path.resolve(__dirname, "src/zzz"), path.resolve(__dirname, "src/abc") ],
+      //   exclude: /node_modules/, // dont send these hundreds of files to babel! Client will download these itself upon "npm i"
+      //   use: {  // ref: https://webpack.js.org/configuration/module/#ruleuse
+      //     loader: 'babel-loader', // node_modules/babel-loader/lib runs something here ...?
+      //     // NOTE: options can be left out but you need a .babelrc with same presets.
+      //     //       If you leave out both things, get fail without a description of whats wrong
+      //     options: { "presets": ["@babel/preset-env", "@babel/preset-react"] }
+      //   }, 
+      // }, // END of babel rule
 
       {  // this rule includes .css files
         test: /\.css$/,
@@ -148,6 +179,7 @@ module.exports =
   // devServer does not apply to build
   // https://webpack.js.org/configuration/dev-server/#devserverclient
   devServer: {
+    // https: true, // location on browser is denied if not https
     // allowedHosts: ['.host.com', 'host2.com'],
     // OK for only one static dir...    static: path.join(__dirname, './publicProj/npmjs_com/bundle-publish-public'), // originally dist-webpack
     static: [
@@ -166,7 +198,7 @@ module.exports =
     // https://webpack.js.org/configuration/dev-server/#devserveropen
     // open: false, //true, // Tells dev-server to open the browser
     // below opens chrome to specific url
-    open: { target: ['/x15/x15image?mwmfont=24.3px'], 
+    open: { target: [''], 
             app: { name: 'msedge' // microsoft edge
             // app: { name: 'chrome'
             // infinite tabs!!   , arguments: ' --auto-open-devtools-for-tabs' 
@@ -182,4 +214,3 @@ module.exports =
     },
   }
 };
-

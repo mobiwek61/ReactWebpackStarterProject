@@ -1,13 +1,11 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.blockyMsg {
+  font-size:18px; font-weight: 700; color: #000000; 
+  background-color:#d3faf8; font-family: 'Noto Sans', sans-serif; 
+}
+.textShadowA {
+  /* offset-x | offset-y | blur-radius | color */
+   /* text-shadow: 3px 3px 12px #ffffff, -3px -3px 12px #ffffff; */
+   color:white;
+   text-shadow: 1px 1px 2px black;
 }

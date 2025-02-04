@@ -1,4 +1,5 @@
 #!/bin/bash
 
+# when run on a pc, this script uses git-bash command window
 
 node ./node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js
