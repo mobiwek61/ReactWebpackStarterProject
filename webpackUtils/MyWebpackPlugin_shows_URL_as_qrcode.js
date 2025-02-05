@@ -6,9 +6,9 @@
 
 /**
  * This is a webpack plugin. It is specified in the webpack.config*.js file.
- * It is not necessary, it just shows a qr code in console for the url.
- * It is a way to run custom javascript code as part of a webpack build.
- * Followed https://webpack.js.org/contribute/writing-a-plugin/ I dont really know what's going on but it works.
+ * It displays a qr code in console where the webpack/webpack server is run
+ * so you can scan it to a phone without entering the whole url.
+ * Followed https://webpack.js.org/contribute/writing-a-plugin
  */
 
 // var qrThing = require('./commandLine-get-QRcode')

@@ -82,7 +82,7 @@ module.exports =
     // this one gets rid of annoying "download devtools" message..
     //new (require('webpack')).DefinePlugin({'__REACT_DEVTOOLS_GLOBAL_HOOK__': '({ isDisabled: true })'}),
     // my own plugin to show qr code ascii in console for mobile viewing
-    new MyWebpackPlugin_shows_URL_as_qrcode({ options: true, urlpath: ':3003/x15/x15?mwmfont=24.7px' })],
+    new MyWebpackPlugin_shows_URL_as_qrcode({ options: true, urlpath: ':3003/sand' })],
 
   // the 'npx create-react-app my-app' thing uses HtmlWebpackPlugin to insert 
   // something like ' <script src="/bundle_webpackServer.js"></script>' into index.html before running so

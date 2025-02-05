@@ -1,17 +1,15 @@
 {
-  "name": "my-app",
+  "name": "ReactWebPackStarter",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "mobiwek61menu": "^0.0.41",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
     "react-scripts": "5.0.1",
-    "systeminformation": "^5.23.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -40,7 +38,10 @@
   },
   "devDependencies": {
     "copy-webpack-plugin": "^12.0.2",
+    "qrcode": "^1.5.4",
     "sass-loader": "^16.0.4",
+    "systeminformation": "^5.23.5",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "openHotTurkeySandwich": "systeminformation is for use by webpack plugin"
 }

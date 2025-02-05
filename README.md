@@ -37,7 +37,7 @@ To run, cd to this folder and in a git-bash (on windows) window:
 - A browser preloaded to a specific port and url is started by the line   
 ```open: { target: ['/snow'],   .....```  
 - This line calls a custom plugin to display the url as an IP address (not localhost) in a QR code on the console:   
-```new MyWebpackPlugin_shows_URL_as_qrcode({ options: true, urlpath: ':3003/x15/x15?mwmfont=24.7px' })],```  
+```new MyWebpackPlugin_shows_URL_as_qrcode({ options: true, urlpath: ':3003/sand' })],```  
 - Beware of the **duplicate React.js problem**. When running a node/React app directly or from webpack there must be only one node_modules in the run folder hierarchy. If more than one node_modules is present ie: run folder and 2 levels up, React fails with a vague and unrelated error message, typically something about useEffect not allowed.
 ### Other unimportant details:  
 - above script uses line ```node ./node_modules/webpack/bin/webpack serve -c ./webpack.config_devServer.js``` to run webpack. Full path is specified because webpack was installed as locally. It can be installed globally; the command will not need the full path but version conflict can happen and is hard to diagnose.  
