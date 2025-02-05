@@ -8,19 +8,14 @@ const si = require('systeminformation');
 var jp = require('jsonpath');
 var QRCode = require('qrcode')
 
-/** this is mobiwekMenu\webpack_babel\commandLine-get-QRcode.js
- *  Run as: "node commandLine-get-QRcode.js ':3000/cars/chevy/malibu'"
+/** Run as: "node commandLine-get-QRcode.js ':3000/cars/chevy/malibu'"
  *  It also gets called by a webpack plugin in this folder. 
  *  It shows the current url as a qrcode. The address is the IP address, not localhost
  *  so a phone can read and go to the url.
- *  It uses the 'systeminformation' package to get the current IP
- *  It uses the 'jsonpath' package to parse output from above
- *  It uses the 'qrcode' package to generate a qr on the console using ascii
+ *  These load & add packages to package.json in "devDependencies" section:
+ *  npm i qrcode -D  ...  npm i systeminformation -D  ...  npm i jsonpath -D   
 */ 
-// add these libaries to local development system
-// BUT NOT TO THE PACKAGE LIBRARY TO BE PUBLISHED
-// npm i systeminformation
-// npm i jsonpath
+
 
 // uses npm package systeminformation to get system info like processor, network info etc.
 // Its used here to get the network interface handling Wi-Fi and get its IP address
@@ -63,9 +58,10 @@ function doAllQR(urlPath) {
         // now compose a url and show in console as a qr code
         theURL="http://" + activeIpAddr + urlPath; // ":3003/amhistory/benFranklin/shipDiagram?mwmfont=24.0px"
         console.log(theURL)
-        QRCode.toString(theURL, {type:'terminal', small:true }, function (err, message) {
-            console.log(message)
-        })
+        QRCode.toString(theURL, 
+          // ref: https://www.npmjs.com/package/qrcode#qr-code-options
+          {type:'terminal', small:true, errorCorrectionLevel:'L' }, 
+          function (err, message) { console.log(message) })
       })
       .catch(error => console.error(error));
 
