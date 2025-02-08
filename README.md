@@ -1,7 +1,7 @@
 
-
-This demo project uses a custom webpack configuration, specifically setup for React.   
-**I totally recommend ignoring any details about webpack; just use it as described below.**  
+### This is a sample React.js project.  
+It uses a custom webpack configuration, specifically setup for React.   
+**You don't need to know anything about webpack to use this project to learn React.**  
 To run, cd to this folder and in a git-bash (on windows) window:  
   ```
   # reads package.json and loads node_modules folder with packages.
@@ -13,10 +13,13 @@ To run, cd to this folder and in a git-bash (on windows) window:
   # Any edits get auto-reloaded in real time.
   ```
 
-#### Folder webpackUtils:
-- has webpack plugins and supporting node.js code. This plugin displays the url as a QR code for display/debugging of app on a mobile device.
+### Project Structure
+- Folders public, src mirror the setup of create-react-app.
+- Folder webpackUtils:  
+Has webpack plugins and supporting node.js code. This plugin displays the url as a QR code for display/debugging of app on a mobile device.
+- Folder **nginx_host** has an nginx setup. Nginx is a HTTP server. It's here to serve as an example of nginx setup and to verify that a webpack build will run properly when deployed on a cloud.  
 
-### What is going on with webpack?  
+### About Webpack  
 - Webpack is used here as a command line utility. It is not part of this node project. It appears in package.json and is installed in node_modules so it may be run from the command line. **It does these things:**  
   - it's http server hosts the app during development
   - it creates a bundle.js for development, served by the http server and later an optimized bundle.js for deploying the web app on github pages, or an nginx server for example.

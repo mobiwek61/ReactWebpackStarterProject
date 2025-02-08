@@ -1,0 +1,126 @@
+
+# july2023
+# run this script as "source addHistory" so history gets added to current shell
+# This uses associative arrays in bash. I use separate variables to hold array operations
+# such as getting length or keys because these operations appear confusing to a modern coder.
+
+# EXAMPLE .bashrc SNIPPET FOR USING WITH THIS UTILITY:
+# alias hhh='source Scripts/addHistory'
+# alias h=history
+# alias gitpushh='Scripts/gitpushh.sh'
+# alias gitpush='git add .; git commit -m "gitpushLaptop"; git push;'
+# alias ls='ls -a'
+
+# may need these also sometimes
+# cd gitproject
+# JAVA_HOME=/home/jdk/jdk-11.0.12-7
+# PS1=" > "
+# PATH=$PATH:$JAVA_HOME/bin
+
+declare -A listing;  # -A makes listing an associative array ie: listing[x], listing[y]
+  listing[a]='
+start nginx_setup/nginx.exe -c nginx_setup/nginx.conf
+tasklist|grep nginx
+Taskkill /?
+Taskkill //IM nginx.exe //F
+nginx_setup/nginx.exe -c nginx_setup/nginx.conf -s stop
+nginx_setup/nginx.exe -c nginx_setup/nginx.conf -s quit
+nginx_setup/nginx.exe -c nginx_setup/nginx.conf -s reload
+'
+# end of user choices blocks. Now read user input requesting specific block..
+
+userInputA='a'
+
+ct=0
+unset choices; # when run as "source thisScript", must ERASE arrays or else they perist between calls.
+declare -A choices;  # this makes listing an associative array ie: listing[x], listing[y]
+charCt=97 # letter 'a'
+skipd=0
+
+if [ $userInputA != 'none' ] 
+then
+	# echo $listing|sed 's/\ /\n/g' # substitute \n newline for space
+	# lines=$(echo -e $listing|sed 's/\ /\n/g') # substitute \n newline for space
+	IFS=$'\n'   #Set the field separator to new line
+	# iterate list chosen by user
+	# for item in ${listing[$userInputA]}  # use curly bracket for associative array
+	chosenListingBlock=${listing[$userInputA]}
+	# present user with list of choices of command-line blocks to choose from
+	for item in ${chosenListingBlock}
+	do
+		if [ ${item::1} != '#' ]   # this grabs first character out of string $item
+		then 
+		    asciiCharCode=$charCt; # echo $asciiCharCode;
+		    if [ $asciiCharCode -gt 122 ]
+		        then 
+		          asciiCharCode=$(($asciiCharCode - 58)) # starts alpabet at uppercase
+		          # echo zzz $asciiCharCode
+		        fi;
+		    charCtAsCharacter=$(printf \\$(printf "%o" $asciiCharCode))  # bizzare but it works. converts int to ascii character
+		    choices[$charCtAsCharacter]=$item; # build associative array where char is key and value is command
+		    # history -s $item; fi;
+		    echo $charCtAsCharacter\) $item;  # show a)date ... b)pwd ... etc
+		    ct=$((ct+1));  charCt=$((charCt+1));
+		    # prints d as number...     echo yyy $(printf '%d' "'a")
+		else
+		    skipd=$((skipd+1));
+		fi 
+	done
+	
+	# IF USING OR || OR AND && USE DOUBLE BRACKETS!  [[    ]]  
+	if [[ $userInputA == 'aa' || $userInputA == 'zzzzzzzzzzplaceholder' ]]; then
+        echo Adding all favorites
+	    userInputB='yy';
+	else
+	    echo "enter choice (1 or more) or yy for all, or nothing and hit enter"
+	    read userInputB
+	fi
+    # -z checks if variable exists returns boolean
+	if [ -z $userInputB  ]; then userInputB='none'; fi; # make exists so if stmt wont crash
+	revOrder=() # setup array to flip lines to reverse order
+	ct=0;
+	choicesKeys=() # declare 1-d array
+	choicesKeys=("${!choices[@]}") # fancy way bash gets array of keys for associative array
+	choicesKeysCount=${#choicesKeys[@]} # fancy way bash gets length of simple array
+	# echo choices keys[8]: ${choicesKeys[8]}, choices keys count: $choicesKeysCount
+	if [ $userInputB == 'yy' ]; then  # add all choices
+	    # reverse userInputB order so history in same order as display
+	    for letter in ${choicesKeys[*]};  do  # use notation to iterate array
+	        revIdx=$(($choicesKeysCount-$ct)); # use (( to cast to number
+	        ct=$(($ct+1)); # $(($mynumber+3)) makes it a number
+	        revOrder[$revIdx]=$letter;
+	        # echo ${revOrder[$revIdx]} yy $letter
+	    done;
+	    # for iter in "${revOrder[@]}"; do echo aa $iter; done;
+		echo adding all 
+		# for iter in "${!choices[@]}"  # iterate associate array "choices"; key is a,b,c val is commandline
+		for iter in "${revOrder[@]}" 
+			do
+				# echo key: $iter; # echo val: ${choices[$iter]}
+				item=${choices[$iter]}
+				if [ ${item::1} != '#' ]  # skip items starting with hash sign (commented out)
+				then 
+					history -s $item  # add to history
+					ct=$((ct+1));
+				else
+					skipd=$((skipd+1));
+				fi 
+			done
+    fi
+	
+	if [[ $userInputB != 'none' &&  $userInputB != 'yy' ]]; then 
+	  # iterate each character in $userInputB
+	  for (( oneCharPtr=0; oneCharPtr<${#userInputB}; oneCharPtr++ )); do
+	    item=${userInputB:$oneCharPtr:1}  # get char at position indicated by oneCharPtr
+	    #echo adding ${choices[$item]}
+	    history -s ${choices[$item]}
+	  done
+	fi
+	# echo $ct items added to history, $skipd skipped\(#\)
+else
+        echo exiting
+fi
+
+
+
+

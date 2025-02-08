@@ -1,0 +1,3 @@
+
+# for nginx.exe  ... an exe should not be in github for security reasons
+*.exe
