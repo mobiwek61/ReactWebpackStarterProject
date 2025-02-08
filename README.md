@@ -20,7 +20,7 @@ Has webpack plugins and supporting node.js code. This plugin displays the url as
 - Folder **nginx_host** has an nginx setup. Nginx is a HTTP server. It's here to serve as an example of nginx setup and to verify that a webpack build will run properly when deployed on a cloud.  
 
 ### About Webpack  
-- Webpack is used here as a command line utility. It is not part of this node project. It appears in package.json and is installed in node_modules so it may be run from the command line. **It does these things:**  
+- Webpack is used here as a command line utility. It is not part of this node project. It appears in package.json (in the devDependencies section) and is installed in node_modules so it may be run from the command line. **It does these things:**  
   - it's http server hosts the app during development
   - it creates a bundle.js for development, served by the http server and later an optimized bundle.js for deploying the web app on github pages, or an nginx server for example.
   - it monitors source files and auto-builds during development.  
