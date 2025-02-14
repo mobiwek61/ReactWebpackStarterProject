@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+/* WARNING: OMITTING BRACKETS GIVES THIS MISLEADING ERROR:
+   "Warning: React.createElement: type is invalid -- expected a string ... */
 import { SampleReactControl, RouterControlSample } from './SampleReactControl'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
