@@ -1,4 +1,6 @@
 import React, { ReactDOM, useEffect, useState } from 'react';
+/* WARNING: OMITTING BRACKETS GIVES THIS MISLEADING ERROR:
+   "Warning: React.createElement: type is invalid -- expected a string ... */
 import { BrowserRouter, Route, Routes, Outlet, Link, useParams,  useNavigate, useLocation } from "react-router-dom";
 
 function SampleReactControl() {
